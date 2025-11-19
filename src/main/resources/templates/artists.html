@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artists</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f0f0f0; /* overall page background */
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Artist Page Container */
+        .artist-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* Individual Artist Box */
+        .artist-box {
+            width: 150px;
+            height: 100px;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        /* Hover Effect for Artist Box */
+        .artist-box:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+        }
+
+        /* Artist Name Link */
+        .artist-box a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1em;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        /* Responsive Typography */
+        .artist-box p {
+            margin: 0;
+            padding: 0 5px;
+            word-wrap: break-word;
+        }
+
+        /* Optional: Add subtle animation on hover text */
+        .artist-box a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <img th:src="@{/img/music-note.png}" alt="Music Icon" class="logo">
+        <span>Music Store</span>
+    </div>
+    <div class="header-right">
+        <span class="menu-icon-btn" onclick="openNav()">☰</span>
+    </div>
+</header>
+
+<!-- Side Navigation Fragment -->
+<div th:index="sidenav">
+    <div id="mySidenav" class="sidenav right">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        
+        <a th:href="@{/home}">
+            <img th:src="@{/img/home-2.png}" class="menu-icon"> Home
+        </a>
+        <a th:href="@{/artists}">
+            <img th:src="@{/img/guitar.png}" class="menu-icon"> Artists
+        </a>
+        <a th:href="@{/albums}">
+            <img th:src="@{/img/music3.png}" class="menu-icon"> Albums
+        </a>
+        <a th:href="@{/playlists}">
+            <img th:src="@{/img/gallery.png}" class="menu-icon"> Playlists
+        </a>
+
+    </div>
+</div>
+
+<div id="main">
+    <h2><img th:src="@{/img/guitar.png}" class="menu-icon"> Artists</h2>
+    <div class="artist-container">
+        <div class="artist-box" th:each="artist : ${artists}">
+            <a th:href="@{'/artist/' + ${artist.name}}">
+            <p th:text="${artist.name}"></p>
+            </a>
+         
+         </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 Music Store. All rights reserved.</p>
+</footer>
+
+<script>
+function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+    document.getElementById("main").style.marginRight = "250px";
+}
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("main").style.marginRight = "0";
+}
+</script>
+
+</body>
+</html>

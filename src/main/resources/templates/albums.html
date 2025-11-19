@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albums - Music Store</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(90deg, #83585e, #f4c4e4);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h3 {
+            color: #2f1729;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1em;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .sort-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .sort-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .sort-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        }
+
+        .sort-btn.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .albums-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .album-card {
+            background: rgb(236, 218, 218);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            position: relative;
+        }
+
+        .album-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+        }
+
+        .album-title {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 6px;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .artist-name {
+            color: #8066ea;
+            font-weight: 500;
+            font-size: 0.95em;
+            margin-bottom: 6px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .artist-name:hover {
+            text-decoration: underline;
+        }
+
+        .track-count {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            background: #f0f0f0;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .popularity-count {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            background: #be72b3;
+            color: #333;
+            font-weight: 500;
+            margin-top: 5px;
+        }
+
+        .no-albums {
+            text-align: center;
+            color: white;
+            font-size: 1em;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h3>🎵 Albums Collection</h3>
+
+    <!-- Sort Buttons -->
+    <div class="sort-buttons">
+        <a th:href="@{/albumsLists}" th:classappend="${currentSort == 'az'} ? 'active' : ''" class="sort-btn">🔤 A to Z</a>
+        <a th:href="@{/albumsPopular}" th:classappend="${currentSort == 'popular'} ? 'active' : ''" class="sort-btn">🔥 Popular</a>
+        <a th:href="@{/home}" class="sort-btn">🏠 Back to Home</a>
+    </div>
+
+    <!-- Albums Grid -->
+    <div class="albums-grid" th:if="${albums != null and !albums.isEmpty()}">
+        <div class="album-card" th:each="album : ${albums}">
+            <!-- Album title -->
+            <div class="album-title" th:text="${album.title}">Album Title</div>
+
+            <!-- Artist name -->
+            <a th:href="@{/artist/{name}(name=${album.artist.name})}" 
+               th:text="${album.artist.name}" 
+               class="artist-name">Artist Name</a>
+
+            <!-- Track count or popularity -->
+            <div th:if="${currentSort == 'az'}" class="track-count" 
+                 th:text="${#lists.size(album.tracks)} + ' Tracks'">0 Tracks</div>
+            <div th:if="${currentSort == 'popular'}" class="popularity-count" 
+                 th:text="${#lists.size(album.tracks)} + ' Adds'">0 Adds</div>
+        </div>
+    </div>
+
+    <div class="no-albums" th:if="${albums == null or albums.isEmpty()}">
+        <p>No albums found in the database.</p>
+    </div>
+</div>
+</body>
+</html>

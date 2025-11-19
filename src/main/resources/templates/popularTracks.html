@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Popular Tracks</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+            color: #fff;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #fff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .track-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 0 10px 40px;
+        }
+
+        .track-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .track-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.2);
+        }
+
+        .track-name {
+            flex: 2;
+            font-weight: 600;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .artist-name {
+            flex: 1.5;
+        }
+
+        .artist-name a {
+            text-decoration: none;
+            color: #ffd700;
+            font-weight: 500;
+        }
+
+        .artist-name a:hover {
+            color: #ff69b4;
+        }
+
+        .duration {
+            flex: 1;
+            text-align: right;
+            color: #e0e0e0;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .playlist-btn {
+            background-color: #1DB954;
+            border: none;
+            color: #fff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .playlist-btn:hover {
+            background-color: #17a44d;
+        }
+        footer{
+            margin-top: auto;
+        }
+
+        @media screen and (max-width: 768px) {
+            .track-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            .duration {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <img th:src="@{/img/music-note.png}" alt="Music Icon" class="logo">
+            <span>Music Store</span>
+        </div>
+        <div class="header-right">
+            <span class="menu-icon-btn" onclick="openNav()">☰</span>
+        </div>
+    </header>
+    
+    <!-- Side Navigation -->
+    <div th:index="sidenav">
+        <div id="mySidenav" class="sidenav right">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            
+            <a th:href="@{/home}">
+                <img th:src="@{/img/home-2.png}" class="menu-icon"> Home
+            </a>
+            <a th:href="@{/artists}">
+                <img th:src="@{/img/guitar.png}" class="menu-icon"> Artists
+
+            </a>
+            <a th:href="@{/albums}">
+                <img th:src="@{/img/music3.png}" class="menu-icon"> Albums
+            </a>
+            <a th:href="@{/playlists}">
+                <img th:src="@{/img/gallery.png}" class="menu-icon"> Playlists
+            </a>
+    
+            
+    </div>
+    </div>
+    <h2 style="padding-top: 60px; text-align: center; color: #2f1729;"> 🎵 Popular Tracks</h2>
+    
+    <div class="track-list">
+          
+
+        <div class="track-item" th:each="track : ${tracks}">
+            <div class="track-name" th:text="${track[0]}"></div>
+            <div class="artist-name">
+                <a th:href="@{'/artist/' + ${track[1]}}" th:text="${track[1]}"></a>
+            </div>
+            <div class="duration">
+                <span th:text="${track[2]}"></span>
+                <!-- Use data-track-id to avoid Thymeleaf onclick errors -->
+                <button class="playlist-btn" th:attr="data-track-id=${track[0]}" onclick="addToPlaylist(this)">+</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="width: 100%;">
+        <p>&copy; 2025 Music Store. All rights reserved.</p>
+    </footer>
+
+
+
+    <script>
+        
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+            document.getElementById("main").style.marginRight = "250px";
+        }
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+            document.getElementById("main").style.marginRight = "0";
+        }
+        function addToPlaylist(btn) {
+            const trackId = btn.getAttribute('data-track-id');
+            fetch('/playlist/add?trackId=' + encodeURIComponent(trackId), { method: 'POST' })
+                .then(response => response.text())
+                .then(data => alert(data))
+                .catch(err => alert('Error adding track.'));
+        }
+    </script>
+</body>
+
+
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Popular Artists</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+            color: #fff;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color:#2f1729;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .artist-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .artist-item {
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .artist-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.2);
+        }
+
+        .artist-name a {
+            text-decoration: none;
+            color: #ffd700;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .artist-name a:hover {
+            color: #ff69b4;
+        }
+
+        @media screen and (max-width: 768px) {
+            .artist-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <img th:src="@{/img/music-note.png}" alt="Music Icon" class="logo">
+            <span>Music Store</span>
+        </div>
+        <div class="header-right">
+            <span class="menu-icon-btn" onclick="openNav()">☰</span>
+        </div>
+    </header>
+
+    <!-- Side Navigation -->
+    <div th:index="sidenav">
+        <div id="mySidenav" class="sidenav right">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            
+            <a th:href="@{/home}">
+                <img th:src="@{/img/home-2.png}" class="menu-icon"> Home
+            </a>
+            <a th:href="@{/artists}">
+                <img th:src="@{/img/guitar.png}" class="menu-icon"> Artists
+            </a>
+            <a th:href="@{/albums}">
+                <img th:src="@{/img/music3.png}" class="menu-icon"> Albums
+            </a>
+            <a th:href="@{/playlists}">
+                <img th:src="@{/img/gallery.png}" class="menu-icon"> Playlists
+            </a>
+    
+        
+    </div>
+
+    <h2>Popular Artists</h2>
+    <div class="artist-list">
+        <div class="artist-item" th:each="artist : ${popularArtists}">
+            <div class="artist-name">
+                <a th:href="@{'/artist/' + ${artist}}" th:text="${artist}"></a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+        }
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${genreName} + ' Tracks'">Genre Tracks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            text-align: center;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 30px;
+            margin-right: 10px;
+        }
+
+        h3 {
+            margin-bottom: 15px;
+            color: #52214e;
+        }
+
+        /* Table Styles */
+        table {
+            width: 90%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: linear-gradient(90deg, #83585e, #f4c4e4);
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f5ff;
+        }
+        td a {
+            color: #a456a9;
+            text-decoration: none;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        td a:hover {
+            text-decoration: underline;
+        }
+
+
+        /* Pagination */
+        .pagination {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .pagination a {
+            margin: 0 5px;
+            padding: 8px 12px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            color: #3a2839;
+        }
+
+        .pagination a.active {
+            background-color: #3a2839;
+            color: white;
+            border-color: #3a2839;
+        }
+
+        .pagination a:hover {
+            background-color: #3a2839;
+            color: white;
+            border-color: #3a2839;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #3a2839;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #dda4ea;
+            color: white;
+            margin-top: 40px;
+        }
+
+        
+        @media screen and (max-width: 768px) {
+        table, thead, tbody, th, td, tr {
+            display: block;
+            width: 100%;
+        }
+
+        thead tr {
+            display: none;
+        }
+
+        tr {
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            background: white;
+            padding: 10px;
+        }
+
+        td {
+            /* Make full width for content */
+            display: flex;
+            justify-content: flex-start;
+            padding: 8px 12px;
+            text-align: left;
+            position: relative;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;       /* allow wrapping */
+        }
+
+        td::before {
+            content: attr(data-label);
+            font-weight: bold;
+            margin-right: 10px;       
+            flex-shrink: 0;        
+        }
+
+        
+
+    }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <img th:src="@{/img/music-note.png}" alt="Music Icon" class="logo">
+    <h2 th:text="'Genre: ' + ${genreName}"></h2>
+</header>
+
+<h3 th:text="'Tracks in ' + ${genreName}"></h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Track</th>
+            <th>Album</th>
+            <th>Artist</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="t : ${tracks}">
+            <td th:text="${t.name}" th:attr="data-label='Track'"></td>
+            <td th:attr="data-label='Album'">
+                <a th:href="@{/album/{id}(id=${t.album.id})}" th:text="${t.album.title}"></a>
+            </td>
+            <td th:attr="data-label='Artist'">
+                <a th:href="@{/artist/{name}(name=${t.album.artist.name})}" th:text="${t.album.artist.name}"></a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- Pagination -->
+<div class="pagination">
+    <!-- Previous -->
+    <span th:if="${currentPage > 1}">
+        <a th:href="@{/genre/{name}(name=${genreName}, page=${currentPage - 1})}">Previous</a>
+        </span>
+
+<!-- First page -->
+    <a th:if="${currentPage != 1}" th:href="@{/genre/{name}(name=${genreName}, page=1)}">1</a>
+
+<!-- Pages around current -->
+    <span th:each="i : ${#numbers.sequence((currentPage > 2 ? currentPage-2 : 2), (currentPage+2 < totalPages ? currentPage+2 : totalPages-1))}">
+        <a th:href="@{/genre/{name}(name=${genreName}, page=${i})}"
+       th:text="${i}"
+       th:classappend="${i == currentPage} ? 'active' : ''"></a>
+    </span>
+
+<!-- Last page -->
+    <a th:if="${currentPage != totalPages}" th:href="@{/genre/{name}(name=${genreName}, page=${totalPages})}"
+       th:text="${totalPages}"></a>
+
+<!-- Next -->
+    <span th:if="${currentPage < totalPages}">
+        <a th:href="@{/genre/{name}(name=${genreName}, page=${currentPage + 1})}">Next</a>
+    </span>
+
+</div>
+
+<a th:href="@{/genres}" class="back-link">← Back to Genres</a>
+
+<!-- Footer -->
+<footer style="width: 100%;">
+    <p>&copy; 2025 Music Store. All rights reserved.</p>
+</footer>
+ 
+
+</body>
+</html>

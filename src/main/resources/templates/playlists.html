@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Playlists</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #fce4ec);
+            margin: 0;
+            color: #333;
+        }
+
+        h3 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+
+        h3::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: #edb3dd;
+            margin: 10px auto 0 auto;
+            border-radius: 2px;
+        }
+        .playlist-title {
+            text-align: left;
+            width: 100%;  
+            margin-left: 0; 
+            margin-bottom: 20px;
+        }
+
+
+        .playlist-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .playlist-box {
+            background: linear-gradient(90deg, #83585e, #f4c4e4);
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            padding: 20px;
+            width: 200px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .playlist-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .playlist-box a {
+            display: block;
+            text-decoration: none;
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        .playlist-box a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+
+        .playlist-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        @media (max-width: 768px) {
+            .playlist-box {
+                width: 45%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .playlist-box {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <img th:src="@{/img/music-note.png}" alt="Music Icon" class="logo">
+        <span>Music Store</span>
+    </div>
+    <div class="header-right">
+        <span class="menu-icon-btn" onclick="openNav()">☰</span>
+    </div>
+</header>
+
+<!-- Side Navigation -->
+<div th:index="sidenav">
+    <div id="mySidenav" class="sidenav right">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a th:href="@{/home}">
+            <img th:src="@{/img/home-2.png}" class="menu-icon"> Home
+        </a>
+        <a th:href="@{/artists}">
+            <img th:src="@{/img/guitar.png}" class="menu-icon"> Artists
+        </a>
+        <a th:href="@{/albums}">
+            <img th:src="@{/img/music3.png}" class="menu-icon"> Albums
+        </a>
+        <a th:href="@{/playlists}">
+            <img th:src="@{/img/gallery.png}" class="menu-icon"> Playlists
+        </a>
+    </div>
+</div>
+
+<h2 class="playlist-title">🎵 Playlists</h2>
+
+
+<!-- My Playlists (only if logged in) -->
+<div th:if="${loggedIn}">
+    <h3>🎵 My Playlists</h3>
+    <div class="playlist-container">
+        <div class="playlist-box" th:each="playlist : ${myPlaylists}">
+        
+            <a th:href="@{'/playlists/' + ${playlist.id}}"
+               th:text="${playlist.name ?: 'Untitled Playlist'}">
+                Playlist Name
+            </a>
+        </div>
+        <div th:if="${#lists.isEmpty(myPlaylists)}" style="text-align:center; color:#555; width:100%">
+            You have no playlists yet.
+        </div>
+    </div>
+</div>
+
+<!-- All Playlists (always visible) -->
+<h3>🎵 All Playlists</h3>
+<div class="playlist-container">
+    <div class="playlist-box" th:each="playlist : ${playlists}">
+        <a th:href="@{'/playlists/' + ${playlist.id}}"
+           th:text="${playlist.name ?: 'Untitled Playlist'}">
+            Playlist Name
+        </a>
+    </div>
+    <div th:if="${#lists.isEmpty(playlists)}" style="text-align:center; color:#555; width:100%">
+        No playlists available.
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2025 Music Store. All rights reserved.</p>
+</footer>
+
+<script>
+function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+    document.getElementById("main").style.marginRight = "250px";
+}
+
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("main").style.marginRight = "0";
+}
+</script>
+</body>
+</html>

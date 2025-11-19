@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${album.title} + ' - Details'">Album Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* full viewport height */
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            margin: 0;
+            color: #333;
+        }
+        .main-content {
+            flex: 1;  
+            padding: 20px; 
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+        
+        .header h3 {
+            font-size: 28px;
+            margin: 0;
+        }
+        
+        .header h4 {
+            font-size: 16px;
+            color: #555;
+            margin: 5px 0 0 0;
+        }
+        
+        .back-links {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+        
+        .back-links a {
+            text-decoration: none;
+            color: #301a30;
+            font-weight: 500;
+            font-size: 16px;
+        }
+        
+        .back-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 30px;
+            flex-grow: 1; 
+    
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            padding: 10px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            white-space: nowrap;
+        }
+        
+        th {
+            background: linear-gradient(90deg, #83585e, #f4c4e4);
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:hover {
+            background-color: #f1f5ff;
+        }
+        
+        .add-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 5px 12px;
+            transition: background-color 0.2s;
+        }
+        
+        .add-btn:hover {
+            background-color: #1e7e34;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #dda4ea;
+            color: white;
+            width: 100%;
+            margin-top: auto; /* push footer to bottom */
+        }
+        
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            .header h3 { font-size: 24px; }
+            .header h4 { font-size: 15px; }
+            .add-btn { font-size: 16px; padding: 5px 10px; }
+        }
+        
+        @media screen and (max-width: 480px) {
+            .header h3 { font-size: 20px; }
+            .header h4 { font-size: 13px; }
+            .add-btn { font-size: 14px; padding: 4px 8px; }
+        }
+        </style>
+        
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <h3 th:text="${album.title}">Album Name</h3>
+        <h4 th:text="'By: ' + ${album.artist.name}">Artist Name</h4>
+    </div>
+
+    <!-- Back Links -->
+    <div class="back-links">
+        <a th:href="@{'/artist/' + ${album.artist.name}}">← Back to Artist</a>
+        <a th:href="@{/home}">← Back to Home</a>
+    </div>
+
+    <!-- Tracks Table -->
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Track</th>
+                    <th>Playlist</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="track : ${tracks}">
+                    <td th:text="${track.name}" data-label="Track">Track Name</td>
+                    <td data-label="Playlist">
+                        <button class="add-btn" th:onclick="'addToPlaylist(' + ${track.id} + ')'">+</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Music Store. All rights reserved.</p>
+    </footer>
+
+
+    <!-- Add to Playlist Script (need to change (all playlist button for actions))-->
+    <script>
+        function addToPlaylist(trackId) {
+            fetch('/playlist/add?trackId=' + trackId, { method: 'POST' })
+            .then(response => response.text())
+            .then(data => alert(data))
+            .catch(err => alert('Error adding track.'));
+        }
+    </script>
+
+</body>
+</html>
