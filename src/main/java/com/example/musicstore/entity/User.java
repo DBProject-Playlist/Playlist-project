@@ -19,7 +19,7 @@ public class User {
     @Column(name = "LAST_NAME")
     private String lastName;
 
-    @Column(name = "EMAIL")
+    @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
 
     @Column(name = "SUPPORT_REP_ID")

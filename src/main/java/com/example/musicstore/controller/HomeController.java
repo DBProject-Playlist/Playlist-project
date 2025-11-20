@@ -47,6 +47,12 @@ public class HomeController {
         this.userRepo = userRepo;
     }
 
+    //ROOT PATH - home page
+    @GetMapping("/")
+    public String root(Model model, HttpSession session) {
+        return home(model, session);
+    }
+
     //HOME PAGE
     @GetMapping("/home")
     public String home(Model model, HttpSession session) {
@@ -54,6 +60,14 @@ public class HomeController {
         Boolean loggedIn = (Boolean) session.getAttribute("loggedIn");
         loggedIn = loggedIn != null && loggedIn;
         model.addAttribute("loggedIn", loggedIn);
+
+        // Add user information to model if logged in
+        if (loggedIn && user != null) {
+            model.addAttribute("user", user);
+            String fullName = (user.getFirstName() != null ? user.getFirstName() : "") + 
+                             (user.getLastName() != null ? " " + user.getLastName() : "");
+            model.addAttribute("userFullName", fullName.trim());
+        }
 
         // Common data
         model.addAttribute("genres", genreRepo.findAll());
@@ -136,7 +150,7 @@ public class HomeController {
 
 
     @GetMapping("/playlists/{id}")
-    public String getPlaylistDetails(@PathVariable("id") Long id, Model model) {
+    public String getPlaylistDetails(@PathVariable("id") Long id, Model model, HttpSession session) {
         List<Object[]> results = playlistRepo.findTracksByPlaylistId(id);
         
         List<Map<String, Object>> tracks = new ArrayList<>();
@@ -148,8 +162,18 @@ public class HomeController {
             tracks.add(track);
         }
 
+        Playlist playlist = playlistRepo.findById(id).orElse(null);
         model.addAttribute("tracks", tracks);
-        model.addAttribute("playlist", playlistRepo.findById(id).orElse(null));
+        model.addAttribute("playlist", playlist);
+
+        User currentUser = (User) session.getAttribute("user");
+
+        boolean ownsPlaylist = false;
+        if (playlist != null && playlist.getUser() != null && currentUser != null) {
+            ownsPlaylist = playlist.getUser().getId().equals(currentUser.getId());
+        }
+
+        model.addAttribute("ownsPlaylist", ownsPlaylist);
         return "playlistDetails";
     }
 

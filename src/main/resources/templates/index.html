@@ -1,221 +1,471 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Music Store</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <link href="https://fonts.googleapis.com/css2?family=Italianno&display=swap" rel="stylesheet">
-
-</head>
-<body>
-<header>
-    <div class="header-left">
-        <img th:src="@{/img/music-note.png}" alt="Music Icon" class="logo">
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Italianno&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="header-left">
+        <img th:src="@{/img/music-note.png}" alt="Music Icon" class="logo" />
         <span>Music Store</span>
-    </div>
-    <div class="header-right">
+      </div>
+      <div class="header-right" style="display: flex; align-items: center">
+        <span
+          th:if="${loggedIn}"
+          class="user-name"
+          style="
+            margin-right: 15px;
+            font-weight: 500;
+            font-size: 14px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+          "
+        >
+          👤 <span th:text="${userFullName ?: 'User'}">User Name</span>
+        </span>
         <span class="menu-icon-btn" onclick="openNav()">☰</span>
-    </div>
-</header>
+      </div>
+    </header>
 
-<!-- Side Navigation -->
-<div id="sidenav">
-    <div id="mySidenav" class="sidenav right">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        
+    <!-- Side Navigation -->
+    <div id="sidenav">
+      <div id="mySidenav" class="sidenav right">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"
+          >&times;</a
+        >
+
         <a th:href="@{/home}">
-            <img th:src="@{/img/home-2.png}" class="menu-icon"> Home
+          <img th:src="@{/img/home-2.png}" class="menu-icon" /> Home
         </a>
         <a th:href="@{/artists}">
-            <img th:src="@{/img/guitar.png}" class="menu-icon"> Artists
+          <img th:src="@{/img/guitar.png}" class="menu-icon" /> Artists
         </a>
         <a th:href="@{/albums}">
-            <img th:src="@{/img/music3.png}" class="menu-icon"> Albums
+          <img th:src="@{/img/music3.png}" class="menu-icon" /> Albums
         </a>
         <a th:href="@{/playlists}">
-            <img th:src="@{/img/gallery.png}" class="menu-icon"> Playlists
+          <img th:src="@{/img/gallery.png}" class="menu-icon" /> Playlists
         </a>
 
         <!-- Login / Logout -->
         <a th:if="${loggedIn}" th:href="@{/logout}" th:class="menu-icon">
-            <img th:src="@{/img/key.png}" class="menu-icon"> Logout
+          <img th:src="@{/img/key.png}" class="menu-icon" /> Logout
         </a>
 
         <a th:unless="${loggedIn}" th:href="@{/login}" th:class="menu-icon">
-            <img th:src="@{/img/key.png}" class="menu-icon"> Login
+          <img th:src="@{/img/key.png}" class="menu-icon" /> Login
         </a>
-            </div>
-</div>
+      </div>
+    </div>
 
+    <div id="main">
+      <!-- Search Section -->
+      <div class="search-section">
+        <form th:action="@{/search}" method="get">
+          <input
+            type="text"
+            name="q"
+            placeholder="Search tracks, artists, albums..."
+            required
+          />
+          <button type="submit">Search</button>
+        </form>
+      </div>
 
-
-<div id="main">
-    <!-- Search Section -->
-<div class="search-section">
-    <form th:action="@{/search}" method="get">
-        <input type="text" name="q" placeholder="Search tracks, artists, albums..." required>
-        <button type="submit">Search</button>
-    </form>
-</div>
-
-    <!-- Background Section -->
-    <div class="background-section">
+      <!-- Background Section -->
+      <div class="background-section">
         <h2>Welcome to Music Store</h2>
         <p>Discover your favorite tracks, albums, and artists!</p>
-    </div>
-    <h6 class="gradient-lined-title"></h6>
+      </div>
+      <h6 class="gradient-lined-title"></h6>
 
-    <!-- Card Section -->
-    <div class="card-container">
+      <!-- Card Section -->
+      <div class="card-container">
         <div class="card album-card">
-            <img th:src="@{/img/music3.png}" alt="Album">
-            <a th:href="@{/albums}" class="album-button">Albums</a>
+          <img th:src="@{/img/music3.png}" alt="Album" />
+          <a th:href="@{/albums}" class="album-button">Albums</a>
         </div>
         <div class="card artist-card">
-            <img th:src="@{/img/guitar.png}" alt="Artist">
-            <a th:href="@{/artists}" class="artist-button">Artists</a>
+          <img th:src="@{/img/guitar.png}" alt="Artist" />
+          <a th:href="@{/artists}" class="artist-button">Artists</a>
         </div>
         <div class="card genre-card">
-            <img th:src="@{/img/dj.png}" alt="Genre">
-            <a th:href="@{/genres}" class="genre-button">Genres</a>
+          <img th:src="@{/img/dj.png}" alt="Genre" />
+          <a th:href="@{/genres}" class="genre-button">Genres</a>
         </div>
-    </div>
-    <h6 class="gradient-lined-title"></h6>
+      </div>
+      <h6 class="gradient-lined-title"></h6>
 
-    <!-- Popular Tracks & Artists Side by Side -->
-    <div class="popular-section-container">
-
+      <!-- Popular Tracks & Artists Side by Side -->
+      <div class="popular-section-container">
         <!-- Popular Tracks -->
         <div class="popular-section">
-            <h2>🔥 Popular Tracks</h2>
-            <div class="popular-list" th:each="track, iterStat : ${popularTracks}" th:if="${iterStat.index < 5}">
-                <div class="popular-item">
-                    <div>
-                        <span th:text="${track[0]}" class="track-name">Track Name</span>
-                        <span class="artist-name">
-                            <a th:href="@{'/artist/' + ${track[1]}}" th:text="${track[1]}">Artist Name</a>
-                        </span>
-                    </div>
-                    <a href="#" class="playlist-btn">➕</a>
-                </div>
+          <h2>🔥 Popular Tracks</h2>
+          <div
+            class="popular-list"
+            th:each="track, iterStat : ${popularTracks}"
+            th:if="${iterStat.index < 5}"
+          >
+            <div class="popular-item">
+              <div>
+                <span th:text="${track[0]}" class="track-name">Track Name</span>
+                <span class="artist-name">
+                  <a th:href="@{'/artist/' + ${track[1]}}" th:text="${track[1]}"
+                    >Artist Name</a
+                  >
+                </span>
+              </div>
+              <button
+                class="playlist-btn"
+                th:attr="data-track-name=${track[0]}"
+                onclick="addToPlaylist(this)"
+              >
+                ➕
+              </button>
             </div>
-            <a th:href="@{/popularTracks}" class="load-more">↓ Load More Tracks</a>
+          </div>
+          <a th:href="@{/popularTracks}" class="load-more"
+            >↓ Load More Tracks</a
+          >
         </div>
 
         <!-- Popular Artists -->
         <div class="popular-section">
-            <h2>🌟 Popular Artists</h2>
-            <div class="popular-list" th:each="artist, iterStat : ${top5Artists}" th:if="${iterStat.index < 5}">
-                <div class="popular-item">
-                    <span class="artist-name">
-                        <a th:href="@{'/artist/' + ${artist}}" th:text="${artist}">Artist Name</a>
-                    </span>
-                </div>
+          <h2>🌟 Popular Artists</h2>
+          <div
+            class="popular-list"
+            th:each="artist, iterStat : ${top5Artists}"
+            th:if="${iterStat.index < 5}"
+          >
+            <div class="popular-item">
+              <span class="artist-name">
+                <a th:href="@{'/artist/' + ${artist}}" th:text="${artist}"
+                  >Artist Name</a
+                >
+              </span>
             </div>
-            <a th:href="@{/popularArtists}" class="load-more">↓ Load More Artists</a>
+          </div>
+          <a th:href="@{/popularArtists}" class="load-more"
+            >↓ Load More Artists</a
+          >
         </div>
-
+      </div>
     </div>
-</div>
-<h6 class="gradient-lined-title"></h6>
+    <h6 class="gradient-lined-title"></h6>
 
-<!-- Playlist Section -->
-<div class="playlist-section">
-    
+    <!-- Playlist Section -->
+    <div class="playlist-section">
+      <!-- Top Playlists (everyone sees) -->
+      <h3>🎶 Top Playlists</h3>
+      <div class="playlist-grid">
+        <div
+          class="playlist-card"
+          th:each="playlist, iterStat : ${playlists}"
+          th:if="${iterStat.index < 4}"
+        >
+          <img
+            th:src="@{'/img/' + ${playlist[0]} + '.png'}"
+            onerror="this.onerror=null;this.src='/img/music3.png';"
+            alt="Playlist Image"
+          />
 
-    <!-- Top Playlists (everyone sees) -->
-    <h3>🎶 Top Playlists</h3>
-    <div class="playlist-grid">
-        <div class="playlist-card" 
-             th:each="playlist, iterStat : ${playlists}" 
-             th:if="${iterStat.index < 4}">
-
-            <img th:src="@{'/img/' + ${playlist[0]} + '.png'}" 
-                 onerror="this.onerror=null;this.src='/img/music3.png';" 
-                 alt="Playlist Image">
-
-            <a th:href="@{'/playlists/' + ${playlist[0]}}" 
-               th:text="${playlist[1]}" 
-               class="playlist-name">Playlist Name</a>
+          <a
+            th:href="@{'/playlists/' + ${playlist[0]}}"
+            th:text="${playlist[1]}"
+            class="playlist-name"
+            >Playlist Name</a
+          >
         </div>
+      </div>
+
+      <h6 class="gradient-lined-title"></h6>
+
+      <div th:if="${loggedIn}">
+        <h3>🎶 My Playlist</h3>
+        <div
+          class="playlist-card"
+          th:each="playlist : ${myPlaylists}"
+          style="
+            width: 120px;
+            text-align: center;
+            margin: 10px;
+            padding: 5px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+          "
+        >
+          <img
+            th:src="@{'/img/' + ${playlist.id} + '.png'}"
+            onerror="this.onerror=null;this.src='/img/music3.png';"
+            alt="Playlist Icon"
+            style="
+              width: 60px;
+              height: 60px;
+              object-fit: contain;
+              margin-bottom: 6px;
+              border-radius: 6px;
+            "
+          />
+
+          <a
+            th:href="@{'/playlists/' + ${playlist.id}}"
+            th:text="${playlist.name}"
+            style="
+              display: block;
+              font-size: 12px;
+              font-weight: 500;
+              color: #333;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            "
+          >
+            Playlist Name
+          </a>
+        </div>
+      </div>
+
+      <!-- Message for non-logged-in users -->
+      <div th:unless="${loggedIn}">
+        <p>Please log in to see your personal playlists.</p>
+      </div>
+
+      <!-- Load More Button -->
+      <button
+        class="loadMore"
+        th:onclick="'window.location.href=\'/playlists\''"
+      >
+        ↓ Load More Playlists
+      </button>
     </div>
 
+    <!-- Footer -->
+    <footer style="width: 100%">
+      <p>&copy; 2025 Music Store. All rights reserved.</p>
+    </footer>
 
-<h6 class="gradient-lined-title"></h6>
-
-<div th:if="${loggedIn}">
-    <h3>🎶 My Playlist</h3>
-    <div class="playlist-card" th:each="playlist : ${myPlaylists}" 
-         style="width:120px; text-align:center; margin:10px; padding:5px; background:#fff; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
-         
-        <img th:src="@{'/img/' + ${playlist.id} + '.png'}"
-             onerror="this.onerror=null;this.src='/img/music3.png';"
-             alt="Playlist Icon"
-             style="width:60px; height:60px; object-fit:contain; margin-bottom:6px;border-radius: 6px; ">
-             
-        <a th:href="@{'/playlists/' + ${playlist.id}}"
-           th:text="${playlist.name}"
-           style="display:block; font-size:12px; font-weight:500; color:#333; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-           Playlist Name
-        </a>
+    <!-- Playlist Selection Modal -->
+    <div id="playlistModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closePlaylistModal()">&times;</span>
+        <h2>Select Playlist</h2>
+        <div id="playlistList" class="playlist-list">
+          <div class="no-playlists">Loading playlists...</div>
+        </div>
+        <button type="button" onclick="confirmAddToPlaylist()">
+          Add to Playlist
+        </button>
+      </div>
     </div>
-</div>
 
+    <style>
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
 
-<!-- Message for non-logged-in users -->
-<div th:unless="${loggedIn}">
-    <p>Please log in to see your personal playlists.</p>
-</div>
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 30px;
+        border: none;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        color: #333;
+      }
 
-<!-- Load More Button -->
-<button class="loadMore" th:onclick="'window.location.href=\'/playlists\''">
-    ↓ Load More Playlists
-</button>
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
 
-</div>
+      .close:hover,
+      .close:focus {
+        color: #000;
+      }
 
-<!-- Footer -->
-<footer style="width: 100%;">
-    <p>&copy; 2025 Music Store. All rights reserved.</p>
-</footer>
- 
+      .modal h2 {
+        margin-top: 0;
+        color: #2c3e50;
+      }
 
+      .playlist-list {
+        max-height: 300px;
+        overflow-y: auto;
+        margin: 15px 0;
+      }
 
-    
-<script>
-    function openNav() {
+      .playlist-item {
+        padding: 12px;
+        margin: 8px 0;
+        background: #f5f5f5;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .playlist-item:hover {
+        background: #e0e0e0;
+      }
+
+      .playlist-item.selected {
+        background: #83585e;
+        color: white;
+      }
+
+      .modal button[type="button"] {
+        background: linear-gradient(90deg, #83585e, #f4c4e4);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      .modal button[type="button"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .no-playlists {
+        text-align: center;
+        color: #666;
+        padding: 20px;
+      }
+    </style>
+
+    <script>
+      function openNav() {
         document.getElementById("mySidenav").style.width = "250px";
         document.getElementById("main").style.marginRight = "250px";
-    }
-    
-    function closeNav() {
+      }
+
+      function closeNav() {
         document.getElementById("mySidenav").style.width = "0";
         document.getElementById("main").style.marginRight = "0";
-    }
-    
-    // Search filter function
-    function filterCards() {
-        const input = document.getElementById('searchInput').value.toLowerCase();
-    
-        const elements = document.querySelectorAll('.card, .popular-item');
-        elements.forEach(el => {
-            const text = el.textContent.toLowerCase();
-            el.style.display = text.includes(input) ? 'flex' : 'none';
-        });
-    }
-    
-    // Optional: trigger search on Enter key
-    document.getElementById('searchInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            filterCards();
+      }
+
+      // Search filter function (removed - searchInput element doesn't exist)
+
+      // Playlist functions
+      let currentTrackName = null;
+      let selectedPlaylistId = null;
+
+      function addToPlaylist(btn) {
+        currentTrackName = btn.getAttribute("data-track-name");
+        selectedPlaylistId = null;
+
+        // Check if user is logged in
+        fetch("/api/playlists/my")
+          .then((response) => response.json())
+          .then((playlists) => {
+            if (playlists.length === 0) {
+              alert("You have no playlists. Please create a playlist first.");
+              return;
+            }
+
+            // Display playlists in modal
+            const playlistList = document.getElementById("playlistList");
+            playlistList.innerHTML = "";
+
+            playlists.forEach((playlist) => {
+              const item = document.createElement("div");
+              item.className = "playlist-item";
+              item.textContent = playlist.name;
+              item.onclick = function () {
+                // Remove previous selection
+                document.querySelectorAll(".playlist-item").forEach((el) => {
+                  el.classList.remove("selected");
+                });
+                // Add selection to clicked item
+                this.classList.add("selected");
+                selectedPlaylistId = playlist.id;
+              };
+              playlistList.appendChild(item);
+            });
+
+            // Show modal
+            document.getElementById("playlistModal").style.display = "block";
+          })
+          .catch((err) => {
+            console.error("Error loading playlists:", err);
+            alert(
+              "Error loading playlists. Please make sure you are logged in."
+            );
+          });
+      }
+
+      function closePlaylistModal() {
+        document.getElementById("playlistModal").style.display = "none";
+        currentTrackName = null;
+        selectedPlaylistId = null;
+      }
+
+      function confirmAddToPlaylist() {
+        if (!selectedPlaylistId) {
+          alert("Please select a playlist.");
+          return;
         }
-    });
-    
 
+        if (!currentTrackName) {
+          alert("Track information is missing.");
+          return;
+        }
+
+        // Add track to selected playlist
+        const formData = new URLSearchParams();
+        formData.append("trackName", currentTrackName);
+        formData.append("playlistId", selectedPlaylistId);
+
+        fetch("/api/playlists/add-track", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: formData,
+        })
+          .then((response) => response.text())
+          .then((data) => {
+            alert(data);
+            closePlaylistModal();
+          })
+          .catch((err) => {
+            console.error("Error adding track:", err);
+            alert("Error adding track to playlist.");
+          });
+      }
+
+      // Close modal when clicking outside of it
+      window.onclick = function (event) {
+        const modal = document.getElementById("playlistModal");
+        if (event.target == modal) {
+          closePlaylistModal();
+        }
+      };
     </script>
-    
-</body>
-
+  </body>
 </html>
